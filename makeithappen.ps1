@@ -1,29 +1,48 @@
 ﻿# Systeminformationen auffrufen und in Textdatei speichern
 
-#Hello World
-
-#'geschaft????'
-
-
 $RechnerInformationenAll = Get-ComputerInfo
 $RechnerInformationenAll > C:\Users\10628594\Desktop\testausgaben\rechnerInformationen.txt
 
-#Nur die wichtigen Daten werden für Computerinfo selektiert
+#Nur die wichtigen Daten werden für Computerinfo selektiert uns in html gespeichert
 $RechnerInformationenSelected=@($RechnerInformationenAll | Select-Object -Property CsName, CsDomain, CSModel, CSTotalPysicalMemory, CSUserName)
 
-#IP Configuration
-
-$head = "<style>
+$head01 = "<style>
 td {width:100px; max-width:300px; background-color:lightgrey;}
 table {width:100%;}
 th {font-size:14pt;background-color:yellow;}
 </style>
-<title>Systemdaten</title>"
+
+<h1>Systemdaten</h1>"
+
+$datum = Get-Date -Format "dd.MM.yyyy, HH:mm"
+
+$RechnerInformationenSelected=$RechnerInformationenSelected |ConvertTo-Html -Head $head01
+
+$RechnerInformationenSelected| Out-File "C:\Users\10628594\Desktop\testausgaben\Computerinfo.html"
+
+#IP Configuration analog zu ComputerInfo (Textdatei und HTML)
+
+$head02 = "<style>
+td {width:100px; max-width:300px; background-color:lightgrey;}
+table {width:100%;}
+th {font-size:14pt;background-color:yellow;}
+</style>
+
+<h1>IP-Konfiguration</h1>"
+
 $IpInfos = Get-NetIPAddress
 $IpInfos > C:\Users\10628594\Desktop\testausgaben\IPAdressen.txt
-$IpInfos | Select-Object -
 
-$IpInfos|ConvertTo-Html -Head $head | Out-File C:\Users\10628594\Desktop\testausgaben\IPAdressen.html
+$IpInfosSelected=$IpInfos | Select-Object -Property AddressFamily, IPv4Address, IPv6Address, PrefixLength, InterfaceAlias, IPAddress
+
+$IpInfosSelected=$IpInfosSelected | ConvertTo-Html -Head $head02 
+$IpInfosSelected | Out-File C:\Users\10628594\Desktop\testausgaben\IPAdressen.html
+
+
+$test=@($RechnerInformationenSelected, $IpInfosSelected)
+$test.Count
+$test | ConvertTo-Html | Out-File C:\Users\10628594\Desktop\testausgaben\siehmalan.html
+
 
 
 $RechnerInformationenSelected+=$IpInfos
@@ -32,16 +51,7 @@ $RechnerInformationenSelected.Count
 
 #$RechnerInformationenSelected+$IpInfos| ConvertTo-Html > C:\Users\10628594\Desktop\testausgaben\Computerinfo.html
 
-$head = "<style>
-td {width:100px; max-width:300px; background-color:lightgrey;}
-table {width:100%;}
-th {font-size:14pt;background-color:yellow;}
-</style>
-<title>Systemdaten</title>"
 
-$datum = Get-Date -Format "dd.MM.yyyy, HH:mm"
-
-$RechnerInformationenSelected|ConvertTo-Html -Head $head -PreContent "<h1>Report erzeugt von $env:USERNAME am $datum</h1>" | Out-File "C:\Users\10628594\Desktop\testausgaben\Computerinfo.html"
 
 
 
