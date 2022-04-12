@@ -1,6 +1,10 @@
 ﻿# Systeminformationen auffrufen und in Textdatei speichern
 
 #Hello World
+
+#'geschaft????'
+
+
 $RechnerInformationenAll = Get-ComputerInfo
 $RechnerInformationenAll > C:\Users\10628594\Desktop\testausgaben\rechnerInformationen.txt
 
