@@ -16,7 +16,7 @@ th {font-size:14pt;background-color:yellow;}
 
 $datum = Get-Date -Format "dd.MM.yyyy, HH:mm"
 
-$RechnerInformationenSelected=$RechnerInformationenSelected |ConvertTo-Html -Head $head01
+$RechnerInformationenSelected=$RechnerInformationenSelected |ConvertTo-Html -Head $head01 -PreContent "<h1>Report erzeugt von $env:USERNAME am $datum</h1>"
 
 $RechnerInformationenSelected| Out-File "C:\Users\10628594\Desktop\testausgaben\Computerinfo.html"
 
@@ -35,15 +35,32 @@ $IpInfos > C:\Users\10628594\Desktop\testausgaben\IPAdressen.txt
 
 $IpInfosSelected=$IpInfos | Select-Object -Property AddressFamily, IPv4Address, IPv6Address, PrefixLength, InterfaceAlias, IPAddress
 
-$IpInfosSelected=$IpInfosSelected | ConvertTo-Html -Head $head02 
+$IpInfosSelected=$IpInfosSelected | ConvertTo-Html -Head $head02 -PreContent "<h1>Report erzeugt von $env:USERNAME am $datum</h1>"
 $IpInfosSelected | Out-File C:\Users\10628594\Desktop\testausgaben\IPAdressen.html
 
+#Zusammenführen der verschiedenen HTML-Seiten in einen HTML-Report
 
+$file01 = C:\Users\10628594\Desktop\testausgaben\Computerinfo.html
+$file02 = C:\Users\10628594\Desktop\testausgaben\IPAdressen.html
+
+$output=@()
+
+$content01 = Get-Content C:\Users\10628594\Desktop\testausgaben\Computerinfo.html
+$content02 = Get-Content C:\Users\10628594\Desktop\testausgaben\IPAdressen.html
+
+$output += $content01
+$output += $content02
+$output.count
+
+$output | Out-File C:\Users\10628594\Desktop\testausgaben\Zusammen.html
+
+
+<#
 $test=@($RechnerInformationenSelected, $IpInfosSelected)
 $test.Count
 $test | ConvertTo-Html | Out-File C:\Users\10628594\Desktop\testausgaben\siehmalan.html
 
-
+</#>
 
 $RechnerInformationenSelected+=$IpInfos
 $RechnerInformationenSelected
