@@ -46,9 +46,8 @@ $dns = Get-DnsClientServerAddress
 # Proxy-Einstellungen zeigen
 
 netsh.exe winhttp show proxy > C:\Users\10628594\Desktop\testausgaben\proxyJaNein.txt
-$content04 = C:\Users\10628594\Desktop\testausgaben\proxyJaNein.txt
 
-$wort = @('ein' , 'Proxserver')
+$wort = @('(ein Proxyserver).')  #warum positive Meldung, obwohl Inhalt nicht  korrekt??????
 
 $OCSlatest = (Get-ChildItem -Path 'C:\Users\10628594\Desktop\testausgaben\' -Filter 'proxyJaNein.txt' | Select-Object -First 1).fullname
 if ($OCSlatest) {
@@ -56,9 +55,9 @@ if ($OCSlatest) {
     $OCSlatest
     $search = (Get-Content $OCSlatest | Select-String -CaseSensitive $wort).Matches.Success
     if($search){
-        "Success"
+        $proxyJaNein  | ConvertTo-Html -Head $head01 -PreContent "<h1>Proxy</h1> <h2>Report erzeugt von $env:USERNAME am $datum</h2> <b>Proxy enthalten" | Out-File $path\proxyinfo.html
     } else {
-        "Fail"
+        $proxyJaNein| ConvertTo-Html -Head $head01 -PreContent "<h1>Proxy</h1> <h2>Report erzeugt von $env:USERNAME am $datum</h2> <b> KEIN Proxy!!!" | Out-File $path\proxyinfo.html
     }
 }
 else {
@@ -72,8 +71,8 @@ $output=@()  # Array
 $content01 = Get-Content $path\Computerinfo.html    #herauslesen des HTML-Inhalts
 $content02 = Get-Content $path\IPAdressen.html
 $content03 = Get-Content $path\routingtabelle.html
-
-$output += $content01 + $content02 + $content03 #Inhalt in Array speichern
+$content04 = Get-Content $path\proxyinfo.html
+$output += $content01 + $content02 + $content03 + $content04 #Inhalt in Array speichern
 
 
 $output | Out-File C:\Users\10628594\Desktop\testausgaben\Zusammen.html  # HTML-Seite mit Zusammenfassung aller Reports kreiieren
