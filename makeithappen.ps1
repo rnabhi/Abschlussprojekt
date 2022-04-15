@@ -39,6 +39,32 @@ $routingtabelle = Get-NetRoute
 
 $routingtabelle | ConvertTo-Html -Head $head01 -PreContent "<h1> Routing Tabelle </h1> <h2>Report erzeugt von $env:USERNAME am $datum</h2>" | Out-File $path\routingtabelle.html
 
+#DNS-Zeugs --- welche befehle?
+
+$dns = Get-DnsClientServerAddress
+
+# Proxy-Einstellungen zeigen
+
+netsh.exe winhttp show proxy > C:\Users\10628594\Desktop\testausgaben\proxyJaNein.txt
+$content04 = C:\Users\10628594\Desktop\testausgaben\proxyJaNein.txt
+
+$wort = @('ein' , 'Proxserver')
+
+$OCSlatest = (Get-ChildItem -Path 'C:\Users\10628594\Desktop\testausgaben\' -Filter 'proxyJaNein.txt' | Select-Object -First 1).fullname
+if ($OCSlatest) {
+    #we know we have a file
+    $OCSlatest
+    $search = (Get-Content $OCSlatest | Select-String -CaseSensitive $wort).Matches.Success
+    if($search){
+        "Success"
+    } else {
+        "Fail"
+    }
+}
+else {
+    "No matching files found in $path"
+}
+
 #Zusammenführen der verschiedenen HTML-Seiten in einen HTML-Report
 
 $output=@()  # Array
@@ -51,6 +77,7 @@ $output += $content01 + $content02 + $content03 #Inhalt in Array speichern
 
 
 $output | Out-File C:\Users\10628594\Desktop\testausgaben\Zusammen.html  # HTML-Seite mit Zusammenfassung aller Reports kreiieren
+
 
 
 
@@ -75,11 +102,8 @@ Set-Content $aeskeypath $AESKey
 
 
 
-#Test-DnsServer -ComputerName "10.255.255.254"  #funktioniert nicht
 
-# Proxy-Einstellungen zeigen
 
-# netsh winhttp show proxy
 
 #Anzahl der Networkinterfaces/ Nachbarn / Network interface MAC address
 #Get-NetAdapter
